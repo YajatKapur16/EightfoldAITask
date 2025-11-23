@@ -1,0 +1,9 @@
+langchain
+langchain-google-genai
+langgraph
+langchain-mcp-adapters
+streamlit
+httpx
+python-dotenv
+pydantic
+
