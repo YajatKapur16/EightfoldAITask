@@ -1,0 +1,40 @@
+services:
+  # 1. The Brain & UI (Streamlit + LangGraph)
+  app:
+    build: ./src
+    env_file: .env
+    ports:
+      - "8501:8501"
+    depends_on:
+      - tavily-search
+      - scraper-mcp
+    environment:
+      - MCP_TAVILY_URL=http://tavily-search:8000/sse
+      - MCP_DDG_URL=http://ddg-search:8000/sse
+      - MCP_SCRAPER_URL=http://scraper-mcp:8000/sse
+    volumes:
+      - ./src:/app
+
+  # 2. The Search Tool (Tavily MCP)
+  tavily-search:
+    build: ./mcp_servers/tavily
+    environment:
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+    ports:
+      - "8080:8000"
+
+  # 3. The Discovery Tool (DuckDuckGo MCP)
+  ddg-search:
+    build: ./mcp_servers/ddg
+    ports:
+      - "8081:8000"
+
+  # 4. The Advanced Scraper (Custom Playwright Image)
+  scraper-mcp:
+    build: ./mcp_servers/scraper
+    environment:
+      - PORT=8000
+    ports:
+      - "8000:8000"
+    # Increase shared memory for Headless Chrome
+    shm_size: '2gb'
