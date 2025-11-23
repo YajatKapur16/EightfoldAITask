@@ -1,0 +1,3 @@
+mcp[cli]
+playwright
+uvicorn
